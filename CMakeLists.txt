@@ -86,3 +86,13 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
 )
+
+if(WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$ENV{LOCALAPPDATA}/Programs/Common/VST3/NoiseNinja"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/${PROJECT_NAME}_artefacts/$<CONFIG>/VST3/${PROJECT_NAME}VST3.vst3/Contents/x86_64-win/${PROJECT_NAME}VST3.vst3"
+        "$ENV{LOCALAPPDATA}/Programs/Common/VST3/${PROJECT_NAME}/${PROJECT_NAME}VST3.vst3"
+        COMMENT "Copying Windows VST3 bundle to Common/VST3 directory"
+    )
+endif()
