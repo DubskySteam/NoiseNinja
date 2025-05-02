@@ -1,3 +1,6 @@
+# Juce lib
+lib/juce
+
 # CMake build output
 /build/
 CMakeFiles/
