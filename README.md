@@ -16,7 +16,14 @@ A VST3 plugin implementing noise cancellation with three adjustable suppression 
 ```bash
 mkdir build && cd build
 cmake ..
-cmake --build . --config Release
+cmake --build .
+```
+
+##### Optional plugin install path
+```bash
+mkdir build && cd build
+cmake .. -DVST3_INSTALL_DIR=$HOME/path/to/dir
+cmake --build .
 ```
 
 ## Commit semantics
