@@ -12,7 +12,7 @@ function(install_vst3_bundle TARGET_NAME)
     endif()
 
     if(WIN32)
-        set(VST3_SOURCE "${CMAKE_BINARY_DIR}/${TARGET_NAME}_artefacts/$<CONFIG>/VST3/${TARGET_NAME}VST3.vst3/Contents/x86_64-win/${TARGET_NAME}VST3.vst3")
+        set(VST3_SOURCE "${CMAKE_BINARY_DIR}/${TARGET_NAME}_artefacts/$<CONFIG>/VST3/${TARGET_NAME}VST3.vst3")
         set(VST3_DEST "${VST3_INSTALL_DIR}/${TARGET_NAME}VST3.vst3")
     elseif(UNIX AND NOT APPLE)
         set(VST3_SOURCE "${CMAKE_BINARY_DIR}/${TARGET_NAME}_artefacts/VST3/${TARGET_NAME}VST3.vst3")
