@@ -73,9 +73,8 @@ target_include_directories(${PROJECT_NAME}
 # JUCE / Build Flags
 #-------------------------------------------------------------------
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        juce::juce_audio_utils
     PUBLIC
+        juce::juce_audio_utils
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
@@ -92,4 +91,4 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 # Plugin install
 #-------------------------------------------------------------------
 include(cmake/InstallVST3.cmake)
-install_vst3_bundle(${PROJECT_NAME})
+install_plug(${PROJECT_NAME})
