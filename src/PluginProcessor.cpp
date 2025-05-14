@@ -1,30 +1,54 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
-AudioPluginAudioProcessor::AudioPluginAudioProcessor()
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
+////==============================================================================
+//NoiseNinjaProcessor::NoiseNinjaProcessor()
+//     : AudioProcessor (BusesProperties()
+//                     #if ! JucePlugin_IsMidiEffect
+//                      #if ! JucePlugin_IsSynth
+//                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+//                      #endif
+//                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+//                     #endif
+//                       )
+//{
+//}
+
+static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    // Gain: -60 dB to +12 dB
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "gain", "Gain", juce::NormalisableRange<float>(-60.0f, 12.0f, 0.1f), 0.0f));
+
+    // Noise suppression level
+    params.push_back(std::make_unique<juce::AudioParameterChoice>(
+        "suppressLevel", "Suppression Level",
+        juce::StringArray{"Soft", "Medium", "Strict"}, 0));
+
+    return { params.begin(), params.end() };
+}
+
+NoiseNinjaProcessor::NoiseNinjaProcessor()
+    : AudioProcessor(BusesProperties()
+          .withInput("Input", juce::AudioChannelSet::stereo())
+          .withOutput("Output", juce::AudioChannelSet::stereo())),
+      parameters(*this, nullptr, "Parameters", createParameterLayout())
 {
 }
 
-AudioPluginAudioProcessor::~AudioPluginAudioProcessor()
+NoiseNinjaProcessor::~NoiseNinjaProcessor()
 {
 }
 
 //==============================================================================
-const juce::String AudioPluginAudioProcessor::getName() const
+const juce::String NoiseNinjaProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool AudioPluginAudioProcessor::acceptsMidi() const
+bool NoiseNinjaProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -33,7 +57,7 @@ bool AudioPluginAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool AudioPluginAudioProcessor::producesMidi() const
+bool NoiseNinjaProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -42,7 +66,7 @@ bool AudioPluginAudioProcessor::producesMidi() const
    #endif
 }
 
-bool AudioPluginAudioProcessor::isMidiEffect() const
+bool NoiseNinjaProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -51,53 +75,53 @@ bool AudioPluginAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double AudioPluginAudioProcessor::getTailLengthSeconds() const
+double NoiseNinjaProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int AudioPluginAudioProcessor::getNumPrograms()
+int NoiseNinjaProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int AudioPluginAudioProcessor::getCurrentProgram()
+int NoiseNinjaProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void AudioPluginAudioProcessor::setCurrentProgram (int index)
+void NoiseNinjaProcessor::setCurrentProgram (int index)
 {
     juce::ignoreUnused (index);
 }
 
-const juce::String AudioPluginAudioProcessor::getProgramName (int index)
+const juce::String NoiseNinjaProcessor::getProgramName (int index)
 {
     juce::ignoreUnused (index);
     return {};
 }
 
-void AudioPluginAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void NoiseNinjaProcessor::changeProgramName (int index, const juce::String& newName)
 {
     juce::ignoreUnused (index, newName);
 }
 
 //==============================================================================
-void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void NoiseNinjaProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 }
 
-void AudioPluginAudioProcessor::releaseResources()
+void NoiseNinjaProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
-bool AudioPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool NoiseNinjaProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -121,7 +145,7 @@ bool AudioPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
   #endif
 }
 
-void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
+void NoiseNinjaProcessor::processBlock (juce::AudioBuffer<float>& buffer,
                                               juce::MidiBuffer& midiMessages)
 {
     juce::ignoreUnused (midiMessages);
@@ -154,18 +178,18 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 }
 
 //==============================================================================
-bool AudioPluginAudioProcessor::hasEditor() const
+bool NoiseNinjaProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* AudioPluginAudioProcessor::createEditor()
+juce::AudioProcessorEditor* NoiseNinjaProcessor::createEditor()
 {
-    return new AudioPluginAudioProcessorEditor (*this);
+    return new NoiseCancellerAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void AudioPluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void NoiseNinjaProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
@@ -173,7 +197,7 @@ void AudioPluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData
     juce::ignoreUnused (destData);
 }
 
-void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void NoiseNinjaProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -184,5 +208,5 @@ void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeI
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new AudioPluginAudioProcessor();
+    return new NoiseNinjaProcessor();
 }
