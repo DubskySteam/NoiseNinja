@@ -11,7 +11,7 @@ A VST3 plugin implementing noise cancellation with three adjustable suppression 
 ### Dependencies
 - CMake 3.25+
 - VST3 SDK/JUCE framework
-- Compiler with C++23 support
+- Compiler with C++20 support
 
 ```bash
 mkdir build && cd build
@@ -36,5 +36,5 @@ cmake --build .
 | `UI`      | User interface components      |
 | `DOCS`    | Documentation updates          |
 | `TEST`    | Testing-related changes        |
-| `PLUGIN`  | Logic that isn't directly related to the plugin functionality|
+| `PLUGIN`  | Logic that isn't directly related to the UI or  audio functionality|
 | `BUILD`   | Build scripts/CI pipelines     |
