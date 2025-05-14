@@ -1,21 +1,11 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include "ui/NoiseUI.hpp"
 
-class AudioPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
+class NoiseCancellerAudioProcessorEditor : public NoiseUI
 {
 public:
-    explicit AudioPluginAudioProcessorEditor (AudioPluginAudioProcessor&);
-    ~AudioPluginAudioProcessorEditor() override;
-
-    void paint (juce::Graphics&) override;
-    void resized() override;
-
-private:
-	AudioPluginAudioProcessor &processorRef;
-
-	juce::ComboBox presetSelector;
-	juce::Slider knob1;
-	juce::Slider knob2;
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)
+    explicit NoiseCancellerAudioProcessorEditor(NoiseNinjaProcessor&);
+    ~NoiseCancellerAudioProcessorEditor() override;
 };

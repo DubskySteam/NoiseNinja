@@ -1,14 +1,15 @@
 #pragma once
 
-#include <juce_audio_processors/juce_audio_processors.h>
+#include <JuceHeader.h>
+//#include <juce_audio_processors/juce_audio_processors.h>
 
 //==============================================================================
-class AudioPluginAudioProcessor final : public juce::AudioProcessor
+class NoiseNinjaProcessor final : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    AudioPluginAudioProcessor();
-    ~AudioPluginAudioProcessor() override;
+    NoiseNinjaProcessor();
+    ~NoiseNinjaProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -42,7 +43,11 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    using APVTS = juce::AudioProcessorValueTreeState;
+    APVTS parameters;
+
 private:
+    float applyNoiseReduction(float inputSample, int level);
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoiseNinjaProcessor)
 };
